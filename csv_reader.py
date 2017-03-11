@@ -19,7 +19,7 @@ def readCSV(filename):
 			 temp = row[0].split()
 			 dataset.append(temp)
 
-	#An object to hold the target Y and the attributes - note the features[] can be any size
+	#An object to hold the target Y and the attributes
 	class DataPoint(object):
 	 def __init__(self,target,features):
 	  self.target = target
