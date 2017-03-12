@@ -8,17 +8,16 @@ as an object list
 :return: list of Bodyfat_data objects
 :params: filename (string)
 """
+
 def readCSV(filename):
 	folder_path = os.path.dirname(os.path.abspath(__file__))
 	#contains the data set after the reading of the csv file
 	dataset  = []
-
-	with open(folder_path+'/CSV/'+filename+'.csv','rb') as f:
-		reader = csv.reader(f)
+	with open(folder_path+'/CSV/'+filename+'.csv','rb') as file:
+		reader = csv.reader(file)
 		for row in reader:
 			 temp = row[0].split()
 			 dataset.append(temp)
-
 	#An object to hold the target Y and the attributes
 	class DataPoint(object):
 	 def __init__(self,target,features):
