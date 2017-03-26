@@ -26,7 +26,7 @@ for i in range(1,np.shape(X)[1]):
 w = np.zeros(np.shape(X)[1])
 
 #Set the learning rate and No of epochs
-eta = 0.2E-3
+eta = 0.29E-3
 max_epochs = 100
 sse = []
 
@@ -81,3 +81,12 @@ plt.title('BodyFat ANN Accuracy:'+str((1-(err/N))*100)+'%')
 plt.savefig('Eta:'+str(eta)+'.png')
 
 print "SSE vs Epochs plot for the given Eta is saved in the project directory.\n"
+
+print "Predicted Value vs Actual Target\n"
+user_input = raw_input()
+i = 0
+
+while user_input != 'N':
+	print "Predicted value :",np.dot(np.transpose(w),X[i,:])," Actual value:",Y[i]
+	user_input = raw_input()
+	i+=1
