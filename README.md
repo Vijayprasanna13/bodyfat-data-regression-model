@@ -1,4 +1,5 @@
 # bodyfat-data-regression-model
+A simple single layer, single node ANN with a linear activation function that accepts bodyfat data with 14 different features and predicts new input data.
 
 ## Requirements
 1. Python 2.7 or higher. Download it from [here](https://www.python.org/downloads/)
