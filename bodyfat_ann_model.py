@@ -79,3 +79,5 @@ plt.xlabel('Epochs')
 plt.ylabel('SSE')
 plt.title('BodyFat ANN Accuracy:'+str((1-(err/N))*100)+'%')
 plt.savefig('Eta:'+str(eta)+'.png')
+
+print "SSE vs Epochs plot for the given Eta is saved in the project directory.\n"
