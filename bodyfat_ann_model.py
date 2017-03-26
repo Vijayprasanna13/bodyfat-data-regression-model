@@ -27,12 +27,12 @@ w = np.zeros(np.shape(X)[1])
 
 #Set the learning rate and No of epochs
 eta = 0.2E-3
-max_iter = 100
+max_epochs = 100
 sse = []
 
-#Run for max_iter number of epochs and update the wieght by calculating the gradient. 
+#Run for max_epochs number of epochs and update the wieght by calculating the gradient. 
 #Record the cost function output for error for each epoch
-for t in range(0, max_iter):
+for t in range(0, max_epochs):
 	gradient = np.zeros(np.shape(X)[1]) 
 	for i in range(0, N):
 		x_i = X[i, :]
@@ -71,7 +71,7 @@ for i in range(0, N):
 	err += abs(Y[i] - np.dot(np.transpose(w),X[i,:]))/Y[i]
 print "Wieghts : ",w
 print "Accuracy: ",(1-(err/N))*100,"%"
-epochs = [epoch_i+1 for epoch_i in range(0,max_iter)]
+epochs = [epoch_i+1 for epoch_i in range(0,max_epochs)]
 
 #Plot the SSE vs Epochs
 plt.plot(epochs, sse)
