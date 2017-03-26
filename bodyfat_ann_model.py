@@ -1,37 +1,37 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-X_file_training = np.genfromtxt('bodyfat.csv', delimiter=',', skip_header=1, max_rows=100)
-N = np.shape(X_file_training)[0]
-print np.shape(X_file_training)[1]
-X = np.hstack((
-				np.ones(N).reshape(N,1),
-				X_file_training[:,1].reshape(N,1),
-				X_file_training[:,2].reshape(N,1),
-				X_file_training[:,3].reshape(N,1),
-				X_file_training[:,4].reshape(N,1),
-				X_file_training[:,5].reshape(N,1),
-				X_file_training[:,6].reshape(N,1),
-				X_file_training[:,7].reshape(N,1),
-				X_file_training[:,8].reshape(N,1),
-				X_file_training[:,9].reshape(N,1),
-				X_file_training[:,10].reshape(N,1),
-				X_file_training[:,11].reshape(N,1),
-				X_file_training[:,12].reshape(N,1),
-				X_file_training[:,13].reshape(N,1),
-				X_file_training[:,14].reshape(N,1),
-			 ))
+#Split the total number of training sets into two halves. One for training and the other for testing
+max_training = np.shape(np.genfromtxt('bodyfat.csv', delimiter=','))[0]/2
 
+#Load the training data set
+X_file_training = np.genfromtxt('bodyfat.csv', delimiter=',', max_rows=max_training)
+N = np.shape(X_file_training)[0]
+
+#Extract all the available column values from the given training set  
+features = []
+for i in range(0,np.shape(X_file_training)[1]):
+	if i == 0:
+		features.append(np.ones(N).reshape(N,1))
+	else:			
+		features.append(X_file_training[:,i].reshape(N,1))
+
+#Create the input np array
+X = np.hstack((features))
 Y = X_file_training[:,0]
- 
+
+#Scale the input vectors using (col.values - mean)/std.dev
 for i in range(1,np.shape(X)[1]):
 	X[:,i] = (X[:, i]-np.mean(X[:, i]))/np.std(X[:, i])
-
 w = np.zeros(np.shape(X)[1])
-eta = 0.1E-3
-max_iter = 100
 
+#Set the learning rate and No of epochs
+eta = 0.2E-3
+max_iter = 100
 sse = []
+
+#Run for max_iter number of epochs and update the wieght by calculating the gradient. 
+#Record the cost function output for error for each epoch
 for t in range(0, max_iter):
 	gradient = np.zeros(np.shape(X)[1]) 
 	for i in range(0, N):
@@ -47,41 +47,33 @@ for t in range(0, max_iter):
 		sse_i += pow(( np.dot(np.transpose(w),x_i) - y_i),2)  
 	sse.append(sse_i)
 
-X_file_testing = np.genfromtxt('bodyfat.csv', delimiter=',', skip_header=101)
+#Load the testing data set
+X_file_testing = np.genfromtxt('bodyfat.csv', delimiter=',', skip_header=max_training+1)
 N = np.shape(X_file_testing)[0]
-X = np.hstack((
-				np.ones(N).reshape(N,1),
-				X_file_testing[:,1].reshape(N,1),
-				X_file_testing[:,2].reshape(N,1),
-				X_file_testing[:,3].reshape(N,1),
-				X_file_testing[:,4].reshape(N,1),
-				X_file_testing[:,5].reshape(N,1),
-				X_file_testing[:,6].reshape(N,1),
-				X_file_testing[:,7].reshape(N,1),
-				X_file_testing[:,8].reshape(N,1),
-				X_file_testing[:,9].reshape(N,1),
-				X_file_testing[:,10].reshape(N,1),
-				X_file_testing[:,11].reshape(N,1),
-				X_file_testing[:,12].reshape(N,1),
-				X_file_testing[:,13].reshape(N,1),
-				X_file_testing[:,14].reshape(N,1),
-			 ))
+
+#Load all available features
+features = []
+for i in range(0,np.shape(X_file_testing)[1]):
+	if i == 0:
+		features.append(np.ones(N).reshape(N,1))
+	else:			
+		features.append(X_file_testing[:,i].reshape(N,1))
+X = np.hstack((features))
 Y = X_file_testing[:,0]
- 
+
+#Scale the testing input
 for i in range(1,np.shape(X)[1]):
 	X[:,i] = (X[:, i]-np.mean(X[:, i]))/np.std(X[:, i])
-
 err = 0
 
+#Find the accuracy and error from target and calculated output
 for i in range(0, N):
-	print "calculated value :",np.dot(np.transpose(w),X[i,:])," actual value :", Y[i]
 	err += abs(Y[i] - np.dot(np.transpose(w),X[i,:]))/Y[i]
-
-
 print "Wieghts : ",w
 print "Accuracy: ",(1-(err/N))*100,"%"
+epochs = [epoch_i+1 for epoch_i in range(0,max_iter)]
 
-epochs = [j+1 for j in range(0,max_iter)]
+#Plot the SSE vs Epochs
 plt.plot(epochs, sse)
 plt.xlabel('Epochs')
 plt.ylabel('SSE')
