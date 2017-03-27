@@ -30,6 +30,8 @@ for i in range(1,np.shape(X)[1]):
 w = np.zeros(np.shape(X)[1])
 
 sse = []
+sse_testing_i = []
+epoch_index = []
 
 #Run for max_epochs number of epochs and update the wieght by calculating the gradient. 
 #Record the cost function output for error for each epoch
@@ -45,8 +47,15 @@ for t in range(0, max_epochs):
 	for i in range(0, N):
 		x_i = X[i, :]
 		y_i = Y[i]
-		sse_i += pow(( np.dot(np.transpose(w),x_i) - y_i),2)  
+		sse_i += pow(( np.dot(np.transpose(w),x_i) - y_i),2)
+	if t%10 == 0:
+		err = 0
+		for k in range(0, N):
+			err += abs(Y[k] - np.dot(np.transpose(w),X[k,:]))/Y[k]
+		epoch_index.append(t)
+		sse_testing_i.append(err)
 	sse.append(sse_i)
+
 
 #Load the testing data set
 X_file_testing = np.genfromtxt(filename, delimiter=',', skip_header=max_training+1)
@@ -75,8 +84,13 @@ print "Wieghts : ",w
 print "Error: ",(err/N)*100,"%"
 epochs = [epoch_i+1 for epoch_i in range(0,max_epochs)]
 
+
 #Plot the SSE vs Epochs
-plt.plot(epochs, sse)
+training_curve, = plt.plot(epochs, sse, label="training set")
+#plot the SSE vs epochs for every 10 epochs
+testing_curve, = plt.plot(epoch_index, sse_testing_i, label="testing set")
+
+plt.legend([training_curve, testing_curve],["training","testing"])
 plt.xlabel('Epochs')
 plt.ylabel('SSE')
 plt.title('BodyFat ANN Error:'+str((err/N)*100)+'%')
