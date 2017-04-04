@@ -1,10 +1,24 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import random
 
 #Set the learning rate and No of epochs
 eta = 0.29E-3
-max_epochs = 100
+max_epochs = 50
 filename = 'bodyfat.csv'
+
+fid = open(filename, "r")
+li = fid.readlines()
+fid.close()
+
+random.shuffle(li)
+
+fid = open("shuffled_bodyfat.csv", "w")
+fid.writelines(li)
+fid.close()
+
+filename = "shuffled_bodyfat.csv"
+
 #Split the total number of training sets into two halves. One for training and the other for testing
 max_training = np.shape(np.genfromtxt(filename, delimiter=','))[0]/2
 
@@ -99,11 +113,18 @@ plt.savefig('Eta:'+str(eta)+'.png')
 print "SSE vs Epochs plot for the given Eta is saved in the project directory.\n"
 
 #remove this comment to get predicted values and calculated values
-print "Predicted Value vs Actual Target\n"
-user_input = raw_input()
-i = 0
+plt.cla()
 
-while user_input != 'N':
-	print "Predicted value :",np.dot(np.transpose(w),X[i,:])," Actual value:",Y[i]
-	user_input = raw_input()
-	i+=1
+actual_data_i = []
+predicted_i = []
+for i in range(0, N):
+	predicted_i.append(np.dot(np.transpose(w),X[i,:]))
+	actual_data_i.append(Y[i])
+
+predicted, = plt.plot([i+1 for i in range(0,125)],predicted_i)
+actual, = plt.plot([i+1 for i in range(0,125)],actual_data_i)
+plt.legend([predicted, actual],["predicted", "actual"])
+plt.xlabel('data row no.')
+plt.ylabel('Target')
+plt.title("Deviation")
+plt.savefig("target deviantion for Eta:"+str(eta)+".png")
