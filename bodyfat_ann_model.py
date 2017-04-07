@@ -3,6 +3,7 @@ import numpy as np
 import random
 
 asdas
+asdasd
 #Set the learning rate and No of epochs
 eta = 0.3E-3
 max_hidden_nodes = 7
