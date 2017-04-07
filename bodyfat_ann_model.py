@@ -2,9 +2,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 import random
 
+asdas
 #Set the learning rate and No of epochs
-eta = 0.29E-3
-max_epochs = 50
+eta = 0.3E-3
+max_hidden_nodes = 7
+max_epochs = 40
 filename = 'bodyfat.csv'
 
 fid = open(filename, "r")
@@ -18,7 +20,7 @@ fid.writelines(li)
 fid.close()
 
 filename = "shuffled_bodyfat.csv"
-
+print "training ..."
 #Split the total number of training sets into two halves. One for training and the other for testing
 max_training = np.shape(np.genfromtxt(filename, delimiter=','))[0]/2
 
@@ -41,7 +43,11 @@ Y = X_file_training[:,0]
 #Scale the input vectors using (col.values - mean)/std.dev
 for i in range(1,np.shape(X)[1]):
 	X[:,i] = (X[:, i]-np.mean(X[:, i]))/np.std(X[:, i])
+
+
+
 w = np.zeros(np.shape(X)[1])
+
 
 sse = []
 sse_testing_i = []
@@ -54,7 +60,12 @@ for t in range(0, max_epochs):
 	for i in range(0, N):
 		x_i = X[i, :]
 		y_i = Y[i]
-	 	h = np.dot(w,x_i) - y_i
+		
+		#sigmoidal
+		#h = 1/(1+np.exp(-(np.dot(np.transpose(w),x_i))))
+		#gradient += 2*(1-h)*(h)*(h-y_i)
+		#linear
+	 	h = np.dot(np.transpose(w),x_i) - y_i
 		gradient += 2*x_i*h
 	w = w - eta*gradient
 	sse_i = 0
@@ -70,7 +81,7 @@ for t in range(0, max_epochs):
 		sse_testing_i.append(err)
 	sse.append(sse_i)
 
-
+print "Testing ... "
 #Load the testing data set
 X_file_testing = np.genfromtxt(filename, delimiter=',', skip_header=max_training+1)
 N = np.shape(X_file_testing)[0]
@@ -110,7 +121,7 @@ plt.ylabel('SSE')
 plt.title('BodyFat ANN Error:'+str((err/N)*100)+'%')
 plt.savefig('Eta:'+str(eta)+'.png')
 
-print "SSE vs Epochs plot for the given Eta is saved in the project directory.\n"
+print "Completed. SSE vs Epochs plot for the given Eta is saved in the project directory.\n"
 
 #remove this comment to get predicted values and calculated values
 plt.cla()
@@ -120,11 +131,11 @@ predicted_i = []
 for i in range(0, N):
 	predicted_i.append(np.dot(np.transpose(w),X[i,:]))
 	actual_data_i.append(Y[i])
-
-predicted, = plt.plot([i+1 for i in range(0,125)],predicted_i)
-actual, = plt.plot([i+1 for i in range(0,125)],actual_data_i)
+n = len(predicted_i)
+predicted = plt.scatter([i for i in range(0,n)],predicted_i,c="r",alpha=0.5)
+actual = plt.scatter([i for i in range(0,n)],actual_data_i,c="b",alpha=0.5)
 plt.legend([predicted, actual],["predicted", "actual"])
 plt.xlabel('data row no.')
 plt.ylabel('Target')
 plt.title("Deviation")
-plt.savefig("target deviantion for Eta:"+str(eta)+".png")
+plt.savefig("target deviation for Eta:"+str(eta)+".png")
